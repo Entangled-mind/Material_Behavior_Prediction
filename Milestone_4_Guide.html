@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Milestone 4 Guide - Baseline Linear Regression</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13px;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 24px;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 6px;
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  h2 {
+    font-size: 16px;
+    color: #1d4ed8;
+    border-left: 4px solid #3b82f6;
+    padding-left: 8px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 13.5px;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .callout {
+    border-left: 4px solid #3b82f6;
+    background: #eff6ff;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .callout-title {
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+  .step-num {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    background: #3b82f6;
+    color: white;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .code-inline {
+    font-family: 'Consolas', monospace;
+    background: #f1f5f9;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: #0f172a;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+  .no-break {
+    page-break-inside: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  .formula-box {
+    text-align: center;
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="float: right;">
+    <span class="badge">Milestone 4</span>
+    <span class="badge" style="background:#dcfce7; color:#15803d;">Baseline Trained</span>
+  </div>
+  <h1>Material Behavior Prediction</h1>
+  <p class="subtitle">Complete Technical Guide to Milestone 4: Baseline Model Training & Interpretation</p>
+</div>
+
+<h2>1. Why Always Start with a Baseline Model?</h2>
+<p>
+  A frequent mistake made by machine learning beginners is jumping straight to complex black-box algorithms like Random Forests, XGBoost, or Neural Networks.
+</p>
+<div class="callout no-break">
+  <div class="callout-title">The Scientific Purpose of a Baseline</div>
+  <ol>
+    <li><strong>Sanity Check:</strong> Proves that the data pipeline, preprocessing, and evaluation code work end-to-end without bugs.</li>
+    <li><strong>Benchmark for Justification:</strong> More complex models require more compute, have higher latency, and are harder to interpret. To justify using a complex model, it <em>must</em> beat the simple baseline by a meaningful margin.</li>
+    <li><strong>Direct Interpretability:</strong> Linear regression provides explicit mathematical weights for each material component that can be checked against known physical chemistry.</li>
+  </ol>
+</div>
+
+<h2>2. The Mathematical Baseline: Ordinary Least Squares (OLS)</h2>
+<p>
+  Linear Regression models predicted compressive strength ($\hat{y}$) as a weighted linear combination of the 8 standardized features:
+</p>
+<div class="formula-box">
+  &ycirc; = 35.07 + 12.12(cement) + 8.44(slag) + 6.89(age) + 5.44(ash) + 1.97(superplastic) + 1.67(fineagg) + 1.20(coarseagg) - 2.83(water)
+</div>
+
+<h3>Standardized Model Weights (Coefficients) & Material Science Meanings</h3>
+<table class="no-break">
+  <thead>
+    <tr><th>Feature</th><th>Standardized Weight</th><th>Direction</th><th>Physical & Chemical Interpretation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>cement</strong></td><td><strong>+12.12 MPa</strong></td><td>Positive (&uarr;)</td><td>Primary hydraulic binder forming calcium silicate hydrate (C-S-H) load-bearing matrix.</td></tr>
+    <tr><td><strong>slag</strong></td><td><strong>+8.44 MPa</strong></td><td>Positive (&uarr;)</td><td>Latent hydraulic binder; reacts over time to provide strong structural density.</td></tr>
+    <tr><td><strong>age</strong></td><td><strong>+6.89 MPa</strong></td><td>Positive (&uarr;)</td><td>Hydration kinetics: longer curing in water increases crystal density and compressive strength.</td></tr>
+    <tr><td><strong>ash</strong></td><td><strong>+5.44 MPa</strong></td><td>Positive (&uarr;)</td><td>Pozzolanic reaction consumes calcium hydroxide to form secondary strength-bearing gel.</td></tr>
+    <tr><td><strong>superplastic</strong></td><td><strong>+1.97 MPa</strong></td><td>Positive (&uarr;)</td><td>Improves cement grain dispersion and paste workability.</td></tr>
+    <tr><td><strong>fineagg / coarseagg</strong></td><td>+1.67 / +1.20 MPa</td><td>Positive (&uarr;)</td><td>Structural skeleton filling volume and resisting deformation.</td></tr>
+    <tr style="background:#fee2e2;"><td><strong>water</strong></td><td><strong>-2.83 MPa</strong></td><td>Negative (&darr;)</td><td><strong>Confirms Abrams' Law:</strong> Excess water evaporates, leaving porous capillary voids that decrease compressive strength.</td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. Performance Evaluation on Unseen Test Data</h2>
+<p>
+  We evaluated the baseline model on the 201 unseen test samples across three standard regression metrics:
+</p>
+
+<div class="card no-break">
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Training Set (804 samples)</th><th>Testing Set (201 samples)</th><th>Interpretation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>$R^2$ Score</strong></td><td><strong>0.6099 (61.0%)</strong></td><td><strong>0.5802 (58.0%)</strong></td><td>Proportion of variance explained. 58% of strength variation is captured by a simple linear plane.</td></tr>
+      <tr><td><strong>MAE</strong></td><td><strong>7.96 MPa</strong></td><td><strong>8.90 MPa</strong></td><td>Average absolute error. On average, predictions deviate by ~8.9 MPa from true crushed strength.</td></tr>
+      <tr><td><strong>RMSE</strong></td><td><strong>10.00 MPa</strong></td><td><strong>11.19 MPa</strong></td><td>Root mean squared error. Penalizes occasional large errors more severely than MAE.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Overfitting Check:</strong> Train $R^2$ (0.61) and Test $R^2$ (0.58) are very close, confirming the model has not memorized the data.</p>
+</div>
+
+<h2>4. Diagnostic Visualizations & Error Analysis</h2>
+
+<div class="card no-break">
+  <h3><span class="step-num">1</span> 07_baseline_actual_vs_predicted.png &bull; Actual vs. Predicted Strength</h3>
+  <p><strong>What to Observe:</strong></p>
+  <ul>
+    <li>Points cluster reasonably close to the red dashed 45-degree line ($y = x$), showing moderate linear correlation.</li>
+    <li><strong>Deficiency Observed:</strong> For high-strength concrete (&gt;60 MPa), the linear model consistently underpredicts. It flattens out and struggles to predict high strengths because linear regression cannot bend to capture exponential or multiplicative interactions between ingredients.</li>
+  </ul>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">2</span> 08_baseline_residuals.png &bull; Residual Error Distribution</h3>
+  <p><strong>What to Observe:</strong></p>
+  <ul>
+    <li>Residuals ($e_i = y_{true} - y_{pred}$) are roughly bell-shaped and centered at 0 MPa.</li>
+    <li>Errors range from roughly -25 MPa to +30 MPa, showing that while the model is unbiased on average, individual prediction swings can be significant.</li>
+  </ul>
+</div>
+
+<h2>5. Direct Motivation for Milestone 5 (Model Comparison)</h2>
+<div class="callout no-break">
+  <div class="callout-title">Why We Need Non-Linear Tree-Based Models</div>
+  Our baseline linear model proves that the features are physically informative ($R^2 pprox 58\%$). However, as demonstrated in our Milestone 2 EDA:
+  <ul>
+    <li><strong>Abrams' Law is non-linear:</strong> Compressive strength scales inversely with the water-to-cement ratio.</li>
+    <li><strong>Hydration kinetics are logarithmic:</strong> Strength rises steeply in the first 28 days and flattens later.</li>
+  </ul>
+  In Milestone 5, we will implement non-linear models (Decision Trees, Random Forests, Gradient Boosters) to capture these physical curves and aim to boost $R^2$ to 80%&ndash;90%!
+</div>
+
+<div style="text-align: center; margin-top: 40px; font-size: 11px; color: #94a3b8;">
+  Material Behavior Prediction &bull; Milestone 4 Technical Guide &bull; Generated for VS Code
+</div>
+
+</body>
+</html>

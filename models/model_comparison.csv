@@ -1,0 +1,5 @@
+Model,Train R²,Test R²,Test MAE (MPa),Test RMSE (MPa),Generalization Gap (R²)
+Linear Regression,0.6099,0.5802,8.9,11.19,0.0297
+Decision Tree,0.8641,0.7885,5.95,7.94,0.0755
+Random Forest,0.9824,0.9069,3.55,5.27,0.0755
+Gradient Boosting,0.9699,0.9198,3.45,4.89,0.0501

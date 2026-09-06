@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Milestone 1 Guide - Material Behavior Prediction</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13px;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 24px;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 6px;
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  .badge-green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  h2 {
+    font-size: 16px;
+    color: #1e3a8a;
+    border-left: 4px solid #2563eb;
+    padding-left: 8px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 13.5px;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px 0;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  .highlight-row {
+    background-color: #fef3c7 !important;
+    font-weight: 600;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .callout {
+    border-left: 4px solid #3b82f6;
+    background: #eff6ff;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .callout-title {
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+  .callout-warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+  }
+  .callout-warning .callout-title {
+    color: #b45309;
+  }
+  .step-num {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .tree {
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11.5px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    line-height: 1.5;
+    margin: 10px 0;
+  }
+  .code-inline {
+    font-family: 'Consolas', monospace;
+    background: #f1f5f9;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: #0f172a;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+  .no-break {
+    page-break-inside: avoid;
+  }
+  .formula-box {
+    text-align: center;
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin: 12px 0;
+    font-size: 13.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="float: right;">
+    <span class="badge">Version 1.0</span>
+    <span class="badge badge-green">Milestone 1 Completed</span>
+  </div>
+  <h1>Material Behavior Prediction</h1>
+  <p class="subtitle">Complete Technical Guide to Milestone 1: Project Setup & Data Understanding</p>
+</div>
+
+<div class="formula-box">
+  Material Formulation (Composition) + Curing Condition (Time) &nbsp;&rarr;&nbsp; ML Model &nbsp;&rarr;&nbsp; Predicted Mechanical Behavior (Strength)
+</div>
+
+<h2>1. Executive Summary & Problem Context</h2>
+<p>
+  In structural materials engineering, knowing the compressive strength of a material mixture before casting is vital for safety, structural integrity, and sustainability. Historically, civil and materials engineers have had to batch concrete formulations manually, pour them into standardized cylinder molds, cure them in climate-controlled water baths for <strong>7 to 28 days</strong> (and sometimes up to a full year), and then place them into hydraulic compression frames to crush them.
+</p>
+<p>
+  This traditional approach is slow, expensive, and limits the rapid discovery of greener cement alternatives.
+</p>
+<p>
+  <strong>The Machine Learning Goal:</strong> Learn statistical patterns directly from validated experimental test mixtures so we can instantly estimate compressive strength across any combination of component masses and curing days.
+</p>
+
+<h2>2. Project Scaffold in VS Code</h2>
+<p>
+  To ensure the project remains clean, modular, and maintainable, we established the following professional directory structure:
+</p>
+
+<div class="tree">
+Material_Behavior_Prediction/
+├── data/
+│   └── material_data.csv        # 1,030 experimental formulations (UCI Benchmark)
+├── src/
+│   └── data_understanding.py    # Milestone 1: Automated hygiene & schema audit
+├── visualizations/              # Directory for Milestone 2 figures & charts
+├── models/                      # Directory for trained .joblib models
+├── README.md                    # Project documentation & feature dictionary
+├── requirements.txt             # Python dependencies (pandas, scikit-learn, etc.)
+└── .gitignore                   # Git exclusion rules
+</div>
+
+<div class="card no-break">
+  <strong>Why This Modular Layout?</strong><br>
+  Rather than placing all code into a single disorganized notebook or script, modular scripts in <span class="code-inline">src/</span> allow each phase of the machine learning lifecycle (Data Understanding &rarr; EDA &rarr; Preprocessing &rarr; Training &rarr; Evaluation) to be tested, debugged, and version-controlled independently.
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. The Dataset: Scientific Provenance & Architecture</h2>
+<p>
+  For Version 1, we selected the benchmark <strong>Concrete Compressive Strength Dataset</strong>, compiled by <strong>Prof. I-Cheng Yeh (1998)</strong> and published in <em>Cement and Concrete Research</em>:
+</p>
+<ul>
+  <li><strong>Row Representation:</strong> Exactly one physical concrete cylinder batch mixed in a laboratory, cured for a specific number of days, and crushed to failure.</li>
+  <li><strong>Total Samples (Rows):</strong> 1,030 individual test experiments.</li>
+  <li><strong>Total Attributes (Columns):</strong> 9 (8 input features + 1 continuous target).</li>
+  <li><strong>Authenticity:</strong> 100% empirical laboratory data (no synthetic noise).</li>
+</ul>
+
+<h3>Input Features (X) & Target Variable (y)</h3>
+<table class="no-break">
+  <thead>
+    <tr>
+      <th>Column</th>
+      <th>Role</th>
+      <th>Units</th>
+      <th>Min</th>
+      <th>Mean</th>
+      <th>Max</th>
+      <th>Engineering & Chemical Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>cement</code></td>
+      <td>Feature ($X_1$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>102.0</td>
+      <td>281.2</td>
+      <td>540.0</td>
+      <td>Primary hydraulic binder reacting with water to form calcium silicate hydrate (C-S-H).</td>
+    </tr>
+    <tr>
+      <td><code>slag</code></td>
+      <td>Feature ($X_2$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>0.0</td>
+      <td>73.9</td>
+      <td>359.4</td>
+      <td>Ground granulated blast-furnace slag (industrial byproduct; secondary binder).</td>
+    </tr>
+    <tr>
+      <td><code>ash</code></td>
+      <td>Feature ($X_3$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>0.0</td>
+      <td>54.2</td>
+      <td>200.1</td>
+      <td>Fly ash from coal power plants (pozzolanic binder; enhances long-term strength).</td>
+    </tr>
+    <tr>
+      <td><code>water</code></td>
+      <td>Feature ($X_4$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>121.8</td>
+      <td>181.6</td>
+      <td>247.0</td>
+      <td>Activates chemical hydration. Excessive water increases porosity and weakens material.</td>
+    </tr>
+    <tr>
+      <td><code>superplastic</code></td>
+      <td>Feature ($X_5$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>0.0</td>
+      <td>6.2</td>
+      <td>32.2</td>
+      <td>Chemical admixture that disperses cement particles, reducing water needs.</td>
+    </tr>
+    <tr>
+      <td><code>coarseagg</code></td>
+      <td>Feature ($X_6$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>801.0</td>
+      <td>972.9</td>
+      <td>1145.0</td>
+      <td>Crushed stone or gravel providing volumetric bulk and stiffness.</td>
+    </tr>
+    <tr>
+      <td><code>fineagg</code></td>
+      <td>Feature ($X_7$)</td>
+      <td>$	ext{kg/m}^3$</td>
+      <td>594.0</td>
+      <td>773.6</td>
+      <td>992.6</td>
+      <td>Sand particles filling microscopic voids between coarse stones.</td>
+    </tr>
+    <tr>
+      <td><code>age</code></td>
+      <td>Feature ($X_8$)</td>
+      <td>Days</td>
+      <td>1</td>
+      <td>45.7</td>
+      <td>365</td>
+      <td>Curing duration in a moist room prior to compression testing.</td>
+    </tr>
+    <tr class="highlight-row">
+      <td><strong><code>strength</code></strong></td>
+      <td><strong>Target ($y$)</strong></td>
+      <td><strong>$	ext{MPa}$</strong></td>
+      <td><strong>2.33</strong></td>
+      <td><strong>35.82</strong></td>
+      <td><strong>82.60</strong></td>
+      <td><strong>Compressive strength under destructive mechanical load (1 MPa &asymp; 145 psi).</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>4. Step-by-Step Breakdown of Milestone 1 Execution</h2>
+<p>
+  In <span class="code-inline">src/data_understanding.py</span>, we created an automated, transparent data audit pipeline covering all 10 required inspection steps:
+</p>
+
+<div class="card no-break">
+  <h3><span class="step-num">1</span> Safe Loading with Dynamic Path Resolution</h3>
+  <p>The script computes paths relative to the file location using <span class="code-inline">os.path.dirname</span>, ensuring it executes reliably from either the project root or within the <span class="code-inline">src/</span> directory.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">2</span> Inspecting First & Last Rows</h3>
+  <p>Verifies tabular column alignment using both <span class="code-inline">df.head()</span> and <span class="code-inline">df.tail()</span> to check that headers and bottom rows are properly formatted without file-truncation artifacts.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">3</span> Dimensionality Audit (Shape)</h3>
+  <p>Confirmed dimensions of <strong>1,030 rows &times; 9 columns</strong>, providing adequate sample support for standard regression algorithms.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">4</span> Data Types & Memory Usage (<span class="code-inline">info()</span>)</h3>
+  <p>Memory usage is tiny (72.6 KB). 8 features are stored as 64-bit floating point numbers (<span class="code-inline">float64</span>), and <span class="code-inline">age</span> is an integer (<span class="code-inline">int64</span>).</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">5</span> Descriptive Statistics (<span class="code-inline">describe()</span>)</h3>
+  <p>Calculated mean, standard deviation, minimum, 25th percentile, median (50th percentile), 75th percentile, and maximum across all columns. Verified that standard deviations are physically plausible.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">6</span> Missing Value Audit (<span class="code-inline">isnull().sum()</span>)</h3>
+  <p><strong>Result: 0 missing values across all 9 columns.</strong> This eliminates the need for speculative imputation (mean/median replacement), preserving empirical experimental integrity.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">7</span> Duplicate Rows Audit (<span class="code-inline">duplicated().sum()</span>)</h3>
+  <p><strong>Result: 25 duplicate rows (2.43%) found.</strong> In physical testing, ASTM/BS standards require casting 2 to 3 duplicate cylinders per batch to test measurement repeatability. In Milestone 3 (Preprocessing), we will address whether to retain or deduplicate these.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">8</span> Column Categorization</h3>
+  <p><strong>9 Numerical columns, 0 Categorical columns.</strong> Because all variables are numerical, one-hot encoding or label encoding is not required for Version 1.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">9</span> Physical Boundary & Sparsity Validation</h3>
+  <p>
+    <strong>Zero Negative Values Detected:</strong> All physical masses and curing days are &ge; 0.<br>
+    <strong>Component Sparsity:</strong> Fly ash is 0 in 55% of batches, slag is 0 in 45.7%, and superplasticizer is 0 in 36.8%. This reflects that these ingredients are optional supplementary additives.
+  </p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">10</span> Problem Formulation & Target Identification</h3>
+  <p>The problem is formally categorized as <strong>Supervised Continuous Regression</strong> where the objective is to learn a mapping function $f(X) = \hat{y}$ predicting compressive strength.</p>
+</div>
+
+<div class="callout callout-warning no-break">
+  <div class="callout-title">Important Scientific Principle</div>
+  The model we build will be valid for material formulations and curing durations that fall within or reasonably near the experimental domain of this dataset. It must not be marketed as a universal predictor for all materials in existence. Predictions are statistical estimates, not physical measurements.
+</div>
+
+<h2>5. Summary of What You Accomplished</h2>
+<p>
+  By completing Milestone 1, you have:
+</p>
+<ul>
+  <li>Constructed a clean, production-grade project repository.</li>
+  <li>Acquired and validated a real-world, peer-reviewed engineering materials dataset.</li>
+  <li>Eliminated data uncertainty (confirmed 0 missing values, verified physical bounds).</li>
+  <li>Documented all features and physical units in <span class="code-inline">README.md</span>.</li>
+  <li>Prepared the project seamlessly for <strong>Milestone 2: Exploratory Data Analysis (EDA)</strong>.</li>
+</ul>
+
+<div style="text-align: center; margin-top: 30px; font-size: 11px; color: #94a3b8;">
+  Material Behavior Prediction &bull; Milestone 1 Technical Report &bull; Generated for VS Code
+</div>
+
+</body>
+</html>

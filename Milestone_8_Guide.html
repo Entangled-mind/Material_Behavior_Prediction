@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Milestone 8 Guide - New Material Prediction Interface</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13px;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 3px solid #059669;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 24px;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 6px;
+    background: #d1fae5;
+    color: #065f46;
+  }
+  h2 {
+    font-size: 16px;
+    color: #065f46;
+    border-left: 4px solid #059669;
+    padding-left: 8px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 13.5px;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .callout {
+    border-left: 4px solid #059669;
+    background: #f0fdf4;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .callout-title {
+    font-weight: 700;
+    color: #065f46;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+  .step-num {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    background: #059669;
+    color: white;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .code-inline {
+    font-family: 'Consolas', monospace;
+    background: #f1f5f9;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: #0f172a;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+  .no-break {
+    page-break-inside: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="float: right;">
+    <span class="badge">Milestone 8</span>
+    <span class="badge" style="background:#dcfce7; color:#15803d;">Deployment Ready</span>
+  </div>
+  <h1>Material Behavior Prediction</h1>
+  <p class="subtitle">Complete Technical Guide to Milestone 8: New Material Prediction Interface & Model Persistence</p>
+</div>
+
+<h2>1. The Goal: From Trained Model to Usable Engineering Tool</h2>
+<p>
+  The final stage of practical machine learning is packaging the trained algorithm into a clean, reusable function that accepts new material formulations and returns predictions with domain validation and structural grading:
+</p>
+<div class="callout no-break">
+  <div class="callout-title">The Engineering Interface Paradigm</div>
+  <code>predict_material(cement, slag, ash, water, superplastic, coarseagg, fineagg, age) &rarr; Strength (MPa)</code>
+</div>
+
+<h2>2. The <span class="code-inline">predict_material()</span> Pipeline Architecture</h2>
+<p>
+  Implemented in <span class="code-inline">src/predict_new_material.py</span>, the function performs 5 automated steps:
+</p>
+
+<div class="card no-break">
+  <h3><span class="step-num">1</span> Physical Boundary & Sanity Validation</h3>
+  <p>Rejects negative masses and zero curing durations. Checks total wet density ($pprox 2,200	ext{ to }2,500	ext{ kg/m}^3$) and warns if the curing age exceeds the 365-day training boundary.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">2</span> Exact Schema Formatting</h3>
+  <p>Converts input variables into a 1-row pandas DataFrame matching the exact feature names and data types used during model training.</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">3</span> Champion Model Inference</h3>
+  <p>Loads <span class="code-inline">models/final_material_model.joblib</span> (our 92.0% $R^2$ Gradient Boosting model) and generates the continuous prediction in Megapascals (MPa).</p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">4</span> Materials Engineering Indicators & Grade Classification</h3>
+  <p>Computes key chemistry ratios and categorizes the predicted strength into standard structural civil engineering grades:</p>
+  <ul>
+    <li><strong>&lt; 20 MPa:</strong> Lean Concrete (Sub-bases, non-structural paving, mass filling).</li>
+    <li><strong>20 &ndash; 35 MPa:</strong> Standard Structural Concrete (Residential foundations, slabs, columns).</li>
+    <li><strong>35 &ndash; 50 MPa:</strong> Heavy Commercial Structural Concrete (Multi-story buildings, highway bridges).</li>
+    <li><strong>&gt; 50 MPa:</strong> High-Performance Concrete (Pre-stressed beams, skyscrapers, marine structures).</li>
+  </ul>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">5</span> Mandatory Scientific Disclaimer</h3>
+  <p>Explicitly prints that the output is an algorithmic statistical estimate, not a physical destructive test, preserving engineering safety standards.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Verification Across 3 Real-World Engineering Scenarios</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scenario</th>
+      <th>Formulation Details</th>
+      <th>Key Ratio</th>
+      <th>Predicted Strength</th>
+      <th>Engineering Structural Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Case 1: Standard Residential</strong></td>
+      <td>Cement 300 kg, Water 180 kg, 0 slag, 0 ash, Age 28 days</td>
+      <td>$w/b = 0.60$</td>
+      <td><strong>31.31 MPa</strong></td>
+      <td><strong>Standard Structural Concrete</strong> (Meets 25&ndash;30 MPa building code for slabs and footings).</td>
+    </tr>
+    <tr>
+      <td><strong>Case 2: Green High-Performance</strong></td>
+      <td>Cement 200 kg, Slag 120 kg, Ash 80 kg, Water 150 kg, SP 10 kg, Age 56 days</td>
+      <td>$w/b = 0.38$</td>
+      <td><strong>57.08 MPa</strong></td>
+      <td><strong>High-Performance Concrete</strong> (Exceeds 50 MPa while cutting clinker carbon emissions by 45%!).</td>
+    </tr>
+    <tr>
+      <td><strong>Case 3: Rapid Early-Strength Repair</strong></td>
+      <td>Cement 450 kg, Slag 50 kg, Water 140 kg, SP 15 kg, Age 3 days</td>
+      <td>$w/b = 0.28$</td>
+      <td><strong>38.39 MPa</strong></td>
+      <td><strong>Heavy Commercial Concrete</strong> (Attains 38+ MPa in just 72 hours for fast highway opening).</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout no-break">
+  <div class="callout-title">How to Use <span class="code-inline">predict_material</span> in Any Python Script</div>
+  <pre style="margin: 6px 0; font-family: 'Consolas', monospace; font-size: 11.5px; color: #065f46;">
+from predict_new_material import predict_material
+
+strength = predict_material(
+    cement=350.0, water=160.0, slag=100.0, ash=0.0,
+    superplastic=8.0, coarseagg=1000.0, fineagg=750.0, age=28
+)
+print(f"Predicted Strength: {strength:.2f} MPa")
+  </pre>
+</div>
+
+<div style="text-align: center; margin-top: 50px; font-size: 11px; color: #94a3b8;">
+  Material Behavior Prediction &bull; Milestone 8 Technical Guide &bull; Generated for VS Code
+</div>
+
+</body>
+</html>

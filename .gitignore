@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.ipynb_checkpoints/
+.env
+venv/
+env/
+
+# SQLite local DB
+data/*.db
+data/*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db

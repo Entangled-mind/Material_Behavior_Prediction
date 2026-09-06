@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Milestone 3 Guide - Data Preprocessing & Leakage Prevention</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13px;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 3px solid #6366f1;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 24px;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 6px;
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+  h2 {
+    font-size: 16px;
+    color: #4338ca;
+    border-left: 4px solid #6366f1;
+    padding-left: 8px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 13.5px;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .callout {
+    border-left: 4px solid #6366f1;
+    background: #eef2ff;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .callout-title {
+    font-weight: 700;
+    color: #4338ca;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+  .step-num {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    background: #6366f1;
+    color: white;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .code-inline {
+    font-family: 'Consolas', monospace;
+    background: #f1f5f9;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: #0f172a;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+  .no-break {
+    page-break-inside: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  .formula-box {
+    text-align: center;
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #312e81;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="float: right;">
+    <span class="badge">Milestone 3</span>
+    <span class="badge" style="background:#dcfce7; color:#15803d;">Preprocessing Complete</span>
+  </div>
+  <h1>Material Behavior Prediction</h1>
+  <p class="subtitle">Complete Technical Guide to Milestone 3: Data Preprocessing & Leakage Prevention</p>
+</div>
+
+<h2>1. The Philosophy of Preprocessing in This Project</h2>
+<p>
+  In machine learning, it is tempting to apply complex transformations blindly. Our philosophy is different:
+</p>
+<div class="callout no-break">
+  <div class="callout-title">The Principle of Parsimony</div>
+  <strong>Handle only what is strictly required by the data and problem.</strong><br>
+  Because our dataset has 0 missing values and 0 categorical text features, we do not need imputation or one-hot encoding. We only perform the essential steps: duplicate handling, train/test splitting, and anti-leakage scaling.
+</div>
+
+<h2>2. Detailed Breakdown of Milestone 3 Steps</h2>
+
+<div class="card no-break">
+  <h3><span class="step-num">1</span> Handling Duplicate Experimental Rows</h3>
+  <p><strong>The Decision:</strong> Dropped 25 exact duplicate rows (reducing dataset from 1,030 &rarr; 1,005 unique formulations).</p>
+  <p><strong>Why Dropping Duplicates is Critical:</strong></p>
+  <ul>
+    <li>In materials experiments, replicate test cylinders are cast to check test consistency.</li>
+    <li>If an identical formulation appears in both the training set and the testing set, the model is tested on data it already memorized during training. This creates <strong>Data Leakage</strong> and artificially inflates evaluation metrics.</li>
+    <li>By removing exact duplicates, we guarantee that the test set evaluates genuine generalization to unseen mixes.</li>
+  </ul>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">2</span> Separating Features (X) & Target (y)</h3>
+  <p>
+    <strong>Inputs ($X$ &bull; 8 features):</strong> <span class="code-inline">cement, slag, ash, water, superplastic, coarseagg, fineagg, age</span><br>
+    <strong>Output ($y$ &bull; continuous target):</strong> <span class="code-inline">strength</span> (Compressive Strength in MPa)
+  </p>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">3</span> Train/Test Split (80% / 20%)</h3>
+  <p>We partition the 1,005 clean formulations into two strictly isolated subsets:</p>
+  <table>
+    <thead>
+      <tr><th>Dataset Partition</th><th>Number of Samples</th><th>Percentage</th><th>Mean Compressive Strength</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Training Set ($X_{train}, y_{train}$)</strong></td><td><strong>804</strong></td><td>80%</td><td>35.07 MPa</td><td>Used by ML algorithms to learn relationships and tune internal weights.</td></tr>
+      <tr><td><strong>Testing Set ($X_{test}, y_{test}$)</strong></td><td><strong>201</strong></td><td>20%</td><td>35.98 MPa</td><td>Locked away; used strictly for final unbiased model evaluation.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Reproducibility with <span class="code-inline">random_state=42</span>:</strong> Using a fixed random seed guarantees that anyone running our code gets the exact same train/test split, making research results verifiable.</p>
+</div>
+
+<div class="page-break"></div>
+
+<div class="card no-break">
+  <h3><span class="step-num">4</span> Feature Scaling (StandardScaler) & The Anti-Leakage Rule</h3>
+  <p>
+    Our 8 features have vastly different numeric magnitudes:
+  </p>
+  <ul>
+    <li>Aggregate weights exceed $1,000	ext{ kg/m}^3$.</li>
+    <li>Superplasticizer is only $0	ext{ to }32	ext{ kg/m}^3$.</li>
+    <li>Curing age ranges from $1	ext{ to }365	ext{ days}$.</li>
+  </ul>
+  <p>Without scaling, algorithms that compute geometric distances or linear gradients (such as Linear Regression, Ridge, Lasso, and KNN) give unfair weight to features with larger numbers.</p>
+
+  <div class="formula-box">
+    Standardization Formula: &nbsp;&nbsp; z = (x - &mu;) / &sigma; &nbsp;&nbsp; (Transforms data to Mean = 0, Std = 1)
+  </div>
+
+  <div class="callout no-break" style="border-left-color: #ef4444; background: #fef2f2;">
+    <div class="callout-title" style="color: #b91c1c;">The Golden Rule of Data Leakage Prevention</div>
+    <strong>1. Fit ONLY on Training Data:</strong> <span class="code-inline">scaler.fit_transform(X_train)</span> computes the mean (&mu;) and standard deviation (&sigma;) strictly from the 804 training samples.<br>
+    <strong>2. Transform Testing Data:</strong> <span class="code-inline">scaler.transform(X_test)</span> applies the <em>training</em> mean and standard deviation to the test set.<br>
+    <strong>NEVER CALL <span class="code-inline">fit</span> or <span class="code-inline">fit_transform</span> on <span class="code-inline">X_test</span>!</strong> Doing so would allow test set properties to leak into the pipeline before testing.
+  </div>
+</div>
+
+<div class="card no-break">
+  <h3><span class="step-num">5</span> Reusable Module Architecture & Model Persistence</h3>
+  <p>
+    In <span class="code-inline">src/preprocessing.py</span>, we created:
+  </p>
+  <ul>
+    <li>A standalone executable pipeline (<span class="code-inline">python src/preprocessing.py</span>).</li>
+    <li>An importable function <span class="code-inline">prepare_data()</span> that can be called directly by future training and evaluation scripts without copying and pasting code.</li>
+    <li>Fitted scaler persistence: saved to <span class="code-inline">models/scaler.joblib</span> so that new unseen material formulations can be transformed identically during future inference (Milestone 8).</li>
+  </ul>
+</div>
+
+<h2>3. Summary Checklist Before Milestone 4</h2>
+<ul>
+  <li>[x] 25 exact duplicate rows removed (1,005 unique samples retained).</li>
+  <li>[x] Unbiased 80/20 train/test split created with balanced target means (35.07 vs 35.98 MPa).</li>
+  <li>[x] Zero data leakage verified (StandardScaler learned parameters solely from <span class="code-inline">X_train</span>).</li>
+  <li>[x] Both unscaled and scaled feature matrices prepared (unscaled for Decision Trees / Random Forests; scaled for Linear Regression).</li>
+  <li>[x] Scaler serialized to <span class="code-inline">models/scaler.joblib</span>.</li>
+</ul>
+
+<div style="text-align: center; margin-top: 40px; font-size: 11px; color: #94a3b8;">
+  Material Behavior Prediction &bull; Milestone 3 Technical Guide &bull; Generated for VS Code
+</div>
+
+</body>
+</html>
