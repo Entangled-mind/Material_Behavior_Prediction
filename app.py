@@ -3,11 +3,10 @@ app.py
 ======
 Material Behavior Prediction & Intelligent Materials Studio
 Comprehensive Platform:
-1. 🌱 Simple Mode: Everyday language, use-case presets, drying timelines, and real-world weight analogies.
-2. 🔬 Advanced Mode: Full formulation engineering, Abrams' Law, and kinetics curves.
-3. 🧪 Student Chemistry & Reaction Lab: Interactive molecular reactions, heat of hydration, and temperature conditions.
-4. 🛠️ Student DIY / Real-Life Maker Lab: Practical kitchen/workshop casting recipes (cups/buckets) for planters, pavers, and test cubes.
-5. 📊 Interactive Custom Plotter & AI Insights: Choose any X and Y, pick chart types, and get automated scientific insights.
+1. 🌱 Simple Mode: Everyday language, use-case project presets, drying timelines, and real-world weight analogies.
+2. 🔬 Advanced Engineering Mode: Precise formulation sliders (kg/m³), Abrams' Law, kinetics curves, and SQLite trial tracking.
+3. 🧪 Materials Reaction & Chemistry Lab: Extensive material library with Temperature, Pressure, and Humidity environmental controls and chemical equations.
+4. 📈 Custom Number Plotter & AI Insights Engine: Enter custom X & Y numbers, pick chart types, and get instant mathematical and scientific insights.
 """
 
 import os
@@ -24,7 +23,7 @@ import plotly.graph_objects as go
 # Page Configuration & Styling
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Material Behavior & Chemistry Studio",
+    page_title="Material Behavior & Reaction Studio",
     page_icon="🔬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -62,9 +61,9 @@ st.markdown("""
         font-size: 13.5px;
         color: #1e3a8a;
     }
-    .reaction-box {
+    .reaction-card {
         background: #f0fdf4;
-        border: 1px solid #bbf7d0;
+        border: 1px solid #86efac;
         border-radius: 8px;
         padding: 14px;
         margin: 10px 0;
@@ -72,19 +71,13 @@ st.markdown("""
         font-size: 13px;
         color: #166534;
     }
-    .diy-step {
-        background: #fafafa;
-        border-left: 3px solid #f59e0b;
-        padding: 10px 14px;
-        margin: 8px 0;
-        border-radius: 0 6px 6px 0;
-    }
     .insight-card {
         background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        border-left: 4px solid #0284c7;
+        border-radius: 6px;
         padding: 14px;
-        margin-top: 10px;
+        margin-top: 12px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -168,7 +161,6 @@ def get_all_trials():
     conn.close()
     return df
 
-# Domain constants
 CARBON_FACTORS = {
     'cement': 0.86, 'slag': 0.07, 'ash': 0.015,
     'water': 0.0002, 'superplastic': 0.25, 'coarseagg': 0.005, 'fineagg': 0.005
@@ -197,25 +189,24 @@ st.markdown("""
 <div class="accuracy-banner">
     <div>
         <span style="font-size: 16px; font-weight: 700;">🎯 Model Accuracy: 92.0% (R² Score)</span> &bull; 
-        <span style="font-size: 13px;">Average Prediction Margin: ±3.45 MPa (ASTM C39 Standard)</span>
+        <span style="font-size: 13px;">Physical Margin: ±3.45 MPa (ASTM C39 Benchmark Standard)</span>
     </div>
     <div style="font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 6px;">
-        1,000+ Validated Lab Cylinders (Yeh 1998)
+        1,000+ Laboratory Test Cylinders (Yeh 1998)
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# Top Experience Selector Navigation
+# Studio Navigation
 # -----------------------------------------------------------------------------
 app_section = st.radio(
     "Explore Studio Sections:",
     [
         "🌱 Simple Mode (Everyday Language & Real-World Use Cases)",
         "🔬 Advanced Engineering Mode (Formulas, Sliders & Deep Analytics)",
-        "🧪 Student Chemistry & Reaction Lab (How Ingredients React)",
-        "🛠️ Student DIY & Maker Lab (What You Can Create in Real Life)",
-        "📊 Interactive Custom Plotter (Plot Any X vs Y with AI Insights)"
+        "🧪 Materials Reaction & Chemistry Lab (Temp, Pressure & Reactions)",
+        "📈 Custom Number Plotter & AI Insights (Enter X & Y Numbers)"
     ],
     horizontal=True
 )
@@ -367,7 +358,6 @@ elif app_section.startswith("🔬 Advanced"):
         m2.metric("Water-to-Binder (w/b)", f"{e_wb:.2f}", "Denser" if e_wb < 0.45 else "Porous", delta_color="inverse")
         m3.metric("ASTM Error Band", f"{e_pred-3.45:.1f} to {e_pred+3.45:.1f} MPa")
 
-        # Kinetics curve
         sim_d = [1, 3, 7, 14, 21, 28, 56, 90, 180, 365]
         sim_s = [predict_strength(e_c, e_s, e_a, e_w, e_sp, e_cg, e_fg, d) for d in sim_d]
         fig_k = go.Figure()
@@ -377,263 +367,354 @@ elif app_section.startswith("🔬 Advanced"):
         st.plotly_chart(fig_k, use_container_width=True)
 
 # =============================================================================
-# SECTION 3: 🧪 STUDENT CHEMISTRY & REACTION LAB
+# SECTION 3: 🧪 MATERIALS REACTION & CHEMISTRY LAB (EXPANDED MATERIALS & P/T)
 # =============================================================================
-elif app_section.startswith("🧪 Student Chemistry"):
-    st.markdown('<div class="main-title">🧪 Student Chemistry & Microscopic Reaction Lab</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Understand how Portland cement, water, slag, and fly ash chemically transform from liquid paste into solid stone.</div>', unsafe_allow_html=True)
+elif app_section.startswith("🧪 Materials Reaction"):
+    st.markdown('<div class="main-title">🧪 Materials Chemical Reaction & Environmental Conditions Lab</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Select reactive materials from an expanded library and simulate how Temperature, Pressure, and Humidity alter chemical reaction pathways.</div>', unsafe_allow_html=True)
 
-    col_chem_left, col_chem_right = st.columns([1, 1], gap="large")
+    col_chem_ctrl, col_chem_res = st.columns([1, 1], gap="large")
 
-    with col_chem_left:
-        st.subheader("1. Select Chemical Reactants")
-        selected_binder = st.multiselect(
-            "Choose materials to mix in your virtual reaction beaker:",
-            ["Portland Cement (Alite C3S & Belite C2S)", "Mixing Water (H2O)", "Blast Furnace Slag (Latent Hydraulic)", "Fly Ash (Pozzolanic Silica)", "Superplasticizer (Polymers)"],
-            default=["Portland Cement (Alite C3S & Belite C2S)", "Mixing Water (H2O)", "Fly Ash (Pozzolanic Silica)"]
+    with col_chem_ctrl:
+        st.subheader("1. Choose Materials to React")
+        materials_selected = st.multiselect(
+            "Select materials from the chemical library:",
+            [
+                "Portland Cement (Alite C3S & Belite C2S)",
+                "Mixing Water (H2O)",
+                "Blast Furnace Slag (Calcium Alumino-Silicate)",
+                "Fly Ash (Class F / Pozzolanic Silica)",
+                "Silica Fume / Microsilica (Nano-SiO2)",
+                "Metakaolin (Calcined Kaolin Clay Al2O3·2SiO2)",
+                "Limestone Powder (CaCO3 Fine Filler)",
+                "Calcium Chloride (CaCl2 Accelerator)",
+                "Gypsum (CaSO4·2H2O Retarder)",
+                "Sodium Hydroxide (NaOH Geopolymer Activator)",
+                "Superplasticizer (Polycarboxylate Ether)"
+            ],
+            default=[
+                "Portland Cement (Alite C3S & Belite C2S)",
+                "Mixing Water (H2O)",
+                "Fly Ash (Class F / Pozzolanic Silica)",
+                "Silica Fume / Microsilica (Nano-SiO2)"
+            ]
         )
 
-        st.subheader("2. Environmental Curing Conditions")
-        curing_temp = st.slider("🌡️ Curing Temperature (°C)", 5, 50, 20, 1, help="Heat accelerates chemical reaction kinetics per Arrhenius' Equation.")
-        curing_humidity = st.radio("💧 Moisture Condition:", ["100% Water Submerged / Moist Cured (Ideal)", "50% Ambient Air (Slow drying)", "Dry Hot Wind (Desiccation risk)"])
+        st.subheader("2. Environmental & Processing Conditions")
+        c_temp = st.slider("🌡️ Curing Temperature (°C)", -10, 120, 20, 5, help="Sub-zero halts reaction; high heat accelerates initial hydration; autoclaving >100°C changes crystal phase.")
+        c_press = st.slider("🗜️ Curing Pressure (Atmospheres / Bar)", 1, 50, 1, 1, help="1 atm is standard ambient; 10–50 atm is industrial high-pressure steam autoclaving.")
+        c_humid = st.slider("💧 Relative Humidity (%)", 10, 100, 95, 5, help="Concrete needs >80% RH for continued hydration. Low RH causes desiccation and microcracking.")
+        c_time = st.select_slider("⏱️ Reaction Duration:", options=["1 Hour (Initial Set)", "12 Hours (Dormant Exit)", "24 Hours (Early Hardening)", "7 Days (Hydration Peak)", "28 Days (Standard Cure)", "90 Days (Matured Glass Reaction)"], value="28 Days (Standard Cure)")
 
-    with col_chem_right:
-        st.subheader("🔬 Chemical Reaction Breakdown")
+    with col_chem_res:
+        st.subheader("🔬 Active Chemical Reactions & Equations")
 
-        if "Portland Cement (Alite C3S & Belite C2S)" in selected_binder and "Mixing Water (H2O)" in selected_binder:
-            st.markdown("**Primary Hydration Reaction (The C-S-H Glue Engine):**")
+        reactions_count = 0
+
+        # Reaction 1: Primary Cement Hydration
+        if "Portland Cement (Alite C3S & Belite C2S)" in materials_selected and "Mixing Water (H2O)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**1. Primary Hydraulic Alite Hydration (Fast Strength):**")
             st.markdown("""
-            <div class="reaction-box">
-            2 Ca₃SiO₅ (Alite) + 11 H₂O ➔ 3CaO·2SiO₂·8H₂O (C-S-H Gel) + 3 Ca(OH)₂ (Portlandite) + Heat (500 J/g)
+            <div class="reaction-card">
+            2 Ca₃SiO₅ (Alite) + 11 H₂O ➔ 3CaO·2SiO₂·8H₂O (C-S-H Gel) + 3 Ca(OH)₂ (Portlandite) + ΔH (500 J/g)
             </div>
             """, unsafe_allow_html=True)
-            st.write("💡 **What's happening?** Water dissolves the calcium silicates. Needle-like crystals of **C-S-H Gel** interlock, turning the soup into rock. Notice the byproduct: **Calcium Hydroxide (Portlandite)**, which is weak and soluble.")
 
-            if "Fly Ash (Pozzolanic Silica)" in selected_binder:
-                st.markdown("**Secondary Pozzolanic Reaction (The Eco-Recycling Magic):**")
-                st.markdown("""
-                <div class="reaction-box">
-                Ca(OH)₂ (Weak byproduct) + SiO₂ (Fly Ash) + H₂O ➔ Secondary C-S-H Gel (Ultra-dense matrix!)
-                </div>
-                """, unsafe_allow_html=True)
-                st.write("✨ **Why this is awesome:** The fly ash eats the weak calcium hydroxide leftover from cement and converts it into MORE strong C-S-H gel! That's why fly ash mixes gain huge strength after 28–90 days.")
+            # Reaction 2: Belite Hydration
+            reactions_count += 1
+            st.markdown("**2. Secondary Hydraulic Belite Hydration (Long-Term Strength):**")
+            st.markdown("""
+            <div class="reaction-card">
+            2 Ca₂SiO₄ (Belite) + 9 H₂O ➔ 3CaO·2SiO₂·8H₂O (C-S-H Gel) + Ca(OH)₂ + ΔH (250 J/g)
+            </div>
+            """, unsafe_allow_html=True)
 
-            if "Blast Furnace Slag (Latent Hydraulic)" in selected_binder:
-                st.markdown("**Latent Hydraulic Slag Activation:**")
-                st.markdown("""
-                <div class="reaction-box">
-                Slag Glass + Alkaline Activator [OH⁻] + H₂O ➔ Calcium Aluminate Silicate Hydrate (C-A-S-H)
-                </div>
-                """, unsafe_allow_html=True)
-                st.write("🛡️ **Chemical Resistance:** Slag forms an impermeable gel that protects steel reinforcement from sea salts and acids.")
+        # Reaction 3: Pozzolanic Reaction (Fly Ash)
+        if "Fly Ash (Class F / Pozzolanic Silica)" in materials_selected and "Portland Cement (Alite C3S & Belite C2S)" in materials_selected and "Mixing Water (H2O)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**3. Pozzolanic Reaction (Fly Ash Silica consuming Portlandite):**")
+            st.markdown("""
+            <div class="reaction-card">
+            3 Ca(OH)₂ + 2 SiO₂ (Fly Ash) + 5 H₂O ➔ 3CaO·2SiO₂·8H₂O (Dense Secondary C-S-H Gel)
+            </div>
+            """, unsafe_allow_html=True)
 
-        else:
-            st.info("👈 Select at least **Portland Cement** and **Mixing Water** on the left to activate the chemical reaction engine!")
+        # Reaction 4: Silica Fume Nano-Densification
+        if "Silica Fume / Microsilica (Nano-SiO2)" in materials_selected and "Mixing Water (H2O)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**4. Ultra-Fine Nano-Silica Rapid Refinement:**")
+            st.markdown("""
+            <div class="reaction-card">
+            SiO₂ (Amorphous Nano-Silica) + Ca(OH)₂ + H₂O ➔ High-Density C-S-H Gel (Zero Capillary Pores)
+            </div>
+            """, unsafe_allow_html=True)
 
-    # Microstructure Evolution Graph
+        # Reaction 5: Slag Hydration
+        if "Blast Furnace Slag (Calcium Alumino-Silicate)" in materials_selected and "Mixing Water (H2O)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**5. Latent Hydraulic Slag Activation:**")
+            st.markdown("""
+            <div class="reaction-card">
+            CaO·Al₂O₃·2SiO₂ (Slag Glass) + [OH⁻ Activator] + H₂O ➔ C-A-S-H Gel + Hydrotalcite (Sea Salt Shield)
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Reaction 6: Metakaolin
+        if "Metakaolin (Calcined Kaolin Clay Al2O3·2SiO2)" in materials_selected and "Mixing Water (H2O)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**6. Metakaolin Rapid Pozzolanic Reaction:**")
+            st.markdown("""
+            <div class="reaction-card">
+            Al₂O₃·2SiO₂ (Metakaolin) + 7 Ca(OH)₂ + 9 H₂O ➔ C₄AH₁₃ + C-S-H Gel (High Early Reactivity)
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Reaction 7: Chemical Accelerator
+        if "Calcium Chloride (CaCl2 Accelerator)" in materials_selected:
+            reactions_count += 1
+            st.markdown("**7. Chemical Catalysis (Acceleration):**")
+            st.markdown("""
+            <div class="reaction-card">
+            CaCl₂ accelerates dissolution rate of Alite (C₃S) by 300% ➔ Rapid initial set in cold weather.
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Reaction 8: Geopolymer Alkali Activation
+        if "Sodium Hydroxide (NaOH Geopolymer Activator)" in materials_selected and ("Fly Ash (Class F / Pozzolanic Silica)" in materials_selected or "Blast Furnace Slag (Calcium Alumino-Silicate)" in materials_selected):
+            reactions_count += 1
+            st.markdown("**8. Clinker-Free Geopolymer Polycondensation:**")
+            st.markdown("""
+            <div class="reaction-card">
+            Si-O-Al Framework + Na⁺ + OH⁻ ➔ Sialate Network (-Si-O-Al-O-)ₙ (Zero Cement Clinker CO₂!)
+            </div>
+            """, unsafe_allow_html=True)
+
+        if reactions_count == 0:
+            st.info("👈 Select at least 2 compatible materials on the left to trigger the chemical reaction engine!")
+
+    # Environmental Impact Physics Analysis
     st.markdown("---")
-    st.subheader("📈 Microscopic Phase Evolution (Crystals vs. Capillary Voids)")
-    d_range = np.array([0.1, 0.5, 1, 3, 7, 14, 28, 56, 90])
-    temp_factor = (curing_temp / 20.0) ** 0.5
+    st.subheader(f"📈 Reaction Kinetics & Phase Transformation ({c_temp}°C, {c_press} atm, {c_humid}% RH)")
 
-    # Simulated volume fractions based on powers of hydration
-    csh_vol = np.clip(100 * (1 - np.exp(-0.15 * temp_factor * d_range)), 0, 70)
-    void_vol = np.clip(50 * np.exp(-0.18 * temp_factor * d_range), 5, 50)
-    hydrate_df = pd.DataFrame({'Days': d_range, 'C-S-H Crystal Gel (% Volume)': csh_vol, 'Capillary Water Voids (% Porosity)': void_vol})
+    # Arrhenius temperature scaling: k = A * exp(-Ea / RT)
+    T_kelvin = c_temp + 273.15
+    R_gas = 8.314
+    Ea = 33500.0  # J/mol typical activation energy for cement hydration
+    k_rate = np.exp(-Ea / (R_gas * max(200.0, T_kelvin))) / np.exp(-Ea / (R_gas * 293.15))
 
-    fig_phases = px.line(
-        hydrate_df, x='Days', y=['C-S-H Crystal Gel (% Volume)', 'Capillary Water Voids (% Porosity)'],
-        title=f"Microstructure Densification at {curing_temp}°C",
-        color_discrete_map={'C-S-H Crystal Gel (% Volume)': '#10b981', 'Capillary Water Voids (% Porosity)': '#ef4444'}
-    )
-    fig_phases.update_layout(height=380, xaxis_type="log", xaxis_title="Hydration Age (Days, Log-Scale)", yaxis_title="Microstructural Volume (%)")
-    st.plotly_chart(fig_phases, use_container_width=True)
+    # Pressure acceleration (Hydrothermal effect)
+    press_factor = 1.0 + (c_press - 1) * 0.03
+    humid_factor = max(0.05, c_humid / 100.0)
+    effective_rate = k_rate * press_factor * humid_factor
 
-# =============================================================================
-# SECTION 4: 🛠️ STUDENT DIY & REAL-LIFE MAKER LAB
-# =============================================================================
-elif app_section.startswith("🛠️ Student DIY"):
-    st.markdown('<div class="main-title">🛠️ Student DIY & Real-Life Maker Lab</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Practical, hands-on projects you can actually mix and cast at home or in a school laboratory!</div>', unsafe_allow_html=True)
+    t_days = np.array([0.05, 0.25, 0.5, 1, 2, 3, 7, 14, 28, 56, 90, 180])
+    reaction_progress = np.clip(100.0 * (1.0 - np.exp(-0.35 * effective_rate * t_days)), 0.0, 100.0)
 
-    diy_project = st.selectbox(
-        "Choose a DIY Project to Build:",
-        [
-            "🪴 Modern Geometric Desk Planter / Pen Holder (Smooth finish)",
-            "🪨 Garden Stepping Stone or Pathway Paver (Durable & Weatherproof)",
-            "🌿 Green Eco-Tile Science Project (High Recycled Fly Ash)",
-            "🧱 College/School Structural Compression Cube (For Load Testing)"
-        ]
-    )
+    # Tobermorite conversion under autoclave
+    if c_press > 10 and c_temp > 80:
+        tobermorite_vol = np.clip(80.0 * (1.0 - np.exp(-0.5 * effective_rate * t_days)), 0.0, 85.0)
+        chart_df = pd.DataFrame({'Days': t_days, 'Reaction Degree (%)': reaction_progress, 'Crystalline Tobermorite (C5S6H5) %': tobermorite_vol})
+        y_cols = ['Reaction Degree (%)', 'Crystalline Tobermorite (C5S6H5) %']
+        col_map = {'Reaction Degree (%)': '#0284c7', 'Crystalline Tobermorite (C5S6H5) %': '#10b981'}
+    else:
+        chart_df = pd.DataFrame({'Days': t_days, 'Hydration Conversion (%)': reaction_progress})
+        y_cols = ['Hydration Conversion (%)']
+        col_map = {'Hydration Conversion (%)': '#0284c7'}
 
-    diy_col1, diy_col2 = st.columns([1, 1], gap="large")
+    fig_kin = px.line(chart_df, x='Days', y=y_cols, title="Chemical Conversion Progress Over Time", color_discrete_map=col_map)
+    fig_kin.update_layout(xaxis_type="log", height=380, xaxis_title="Time (Days, Log-Scale)", yaxis_title="Conversion Extent (%)")
+    st.plotly_chart(fig_kin, use_container_width=True)
 
-    with diy_col1:
-        st.subheader("📦 Practical Recipe & Household Measurements")
-
-        unit_choice = st.radio("Select Units:", ["Parts by Volume (Cups / Scoops)", "Metric Weight (Grams / Kilograms)"], horizontal=True)
-
-        if "Desk Planter" in diy_project:
-            st.write("Ideal for smooth desktop pots. Requires fine sand and low gravel.")
-            if "Cups" in unit_choice:
-                recipe = {"Portland Cement": "1 Part (e.g. 1 Cup)", "Fine Play Sand": "2 Parts (e.g. 2 Cups)", "Clean Water": "0.4 Parts (e.g. 0.4 Cup)", "Cooking Oil": "A few drops (Mold release)"}
-            else:
-                recipe = {"Portland Cement": "500 grams", "Fine Sand": "1,000 grams", "Water": "200 grams / mL", "Admixture": "5 grams"}
-            predicted_diy_strength = 32.0
-
-        elif "Garden Stepping Stone" in diy_project:
-            st.write("Needs gravel for heavy foot-traffic resistance.")
-            if "Cups" in unit_choice:
-                recipe = {"Portland Cement": "1 Part (1 Scoop)", "Fine Sand": "2 Parts (2 Scoops)", "Coarse Gravel/Pebbles": "3 Parts (3 Scoops)", "Water": "0.5 Parts"}
-            else:
-                recipe = {"Portland Cement": "1,000 grams", "Sand": "2,000 grams", "Gravel": "3,000 grams", "Water": "500 grams"}
-            predicted_diy_strength = 28.0
-
-        elif "Green Eco-Tile" in diy_project:
-            st.write("Replaces 40% cement with fly ash to demonstrate carbon savings.")
-            if "Cups" in unit_choice:
-                recipe = {"Portland Cement": "0.6 Parts", "Fly Ash / Slag": "0.4 Parts", "Sand": "2 Parts", "Water": "0.45 Parts"}
-            else:
-                recipe = {"Portland Cement": "600 grams", "Fly Ash": "400 grams", "Sand": "2,000 grams", "Water": "450 grams"}
-            predicted_diy_strength = 35.0
-
+    # Physical Condition Explanation
+    cond_col1, cond_col2 = st.columns(2)
+    with cond_col1:
+        if c_temp < 0:
+            st.error("❄️ **Freezing Alert:** Temperature below 0°C freezes pore water. Hydration completely halts and expanding ice destroys pore structure.")
+        elif c_temp > 80:
+            st.success("🔥 **Thermal Acceleration:** High heat accelerates initial chemical reaction rate by up to 400%, allowing rapid mold stripping in pre-cast factories.")
         else:
-            st.write("Standard 100mm test cube for laboratory load-testing.")
-            if "Cups" in unit_choice:
-                recipe = {"Portland Cement": "1 Part", "Sand": "1.8 Parts", "Coarse Stone": "2.8 Parts", "Water": "0.42 Parts"}
-            else:
-                recipe = {"Portland Cement": "1,200 grams", "Sand": "2,100 grams", "Gravel": "3,300 grams", "Water": "500 grams"}
-            predicted_diy_strength = 42.0
+            st.info("🌡️ **Standard Ambient Hydration:** Normal hydration temperature maintains optimal C-S-H crystal morphology.")
 
-        for ing, qty in recipe.items():
-            st.markdown(f"- **{ing}:** `{qty}`")
-
-        st.info(f"📊 **Expected 28-Day Strength:** ~`{predicted_diy_strength:.1f} MPa` ({predicted_diy_strength*145:.0f} PSI)")
-
-    with diy_col2:
-        st.subheader("🪜 Step-by-Step Casting Instructions")
-
-        st.markdown("""
-        <div class="diy-step">
-            <strong>Step 1: Safety First!</strong><br>
-            Wear rubber gloves and a dust mask. Wet cement is alkaline (pH 12–13) and can irritate skin and eyes.
-        </div>
-        <div class="diy-step">
-            <strong>Step 2: Prepare the Mold</strong><br>
-            Use a silicone mold or a recycled plastic container. Wipe the inside with vegetable cooking oil so your concrete releases easily when cured!
-        </div>
-        <div class="diy-step">
-            <strong>Step 3: Dry Mix Before Wetting</strong><br>
-            Thoroughly blend the cement powder, sand, and stones together dry until the color is uniform.
-        </div>
-        <div class="diy-step">
-            <strong>Step 4: Add Water Slowly</strong><br>
-            Add water gradually. <em>Golden rule:</em> It should have the consistency of thick peanut butter, NOT runny pancake batter!
-        </div>
-        <div class="diy-step">
-            <strong>Step 5: Tap to Remove Bubbles</strong><br>
-            Pour into mold and tap the sides firmly for 60 seconds to vibrate trapped air bubbles to the top.
-        </div>
-        <div class="diy-step">
-            <strong>Step 6: The Secret Curing Rule!</strong><br>
-            Cover with a damp paper towel and enclose in a plastic ziplock bag for <strong>at least 48 to 72 hours</strong>. Concrete doesn't 'dry by evaporation'—it cures by chemical hydration with water!
-        </div>
-        """, unsafe_allow_html=True)
+    with cond_col2:
+        if c_press > 10:
+            st.success("🗜️ **Autoclave Hydrothermal Synthesis:** High pressure and heat transform amorphous C-S-H gel into crystalline Tobermorite ($5\\text{CaO}\\cdot 6\\text{SiO}_2\\cdot 5\\text{H}_2\\O$), giving zero drying shrinkage and high strength in hours.")
+        else:
+            st.info("💨 **Atmospheric Pressure:** Standard atmospheric curing produces normal amorphous calcium-silicate-hydrate gel.")
 
 # =============================================================================
-# SECTION 5: 📊 INTERACTIVE CUSTOM PLOTTER & AI INSIGHTS
+# SECTION 4: 📈 CUSTOM NUMBER PLOTTER & AI INSIGHTS ENGINE
 # =============================================================================
-elif app_section.startswith("📊 Interactive Custom Plotter"):
-    st.markdown('<div class="main-title">📊 Interactive Custom Graph Plotter & AI Insights</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Pick any X and Y variables from the 1,000+ benchmark tests, choose your chart type, and get instant scientific insights.</div>', unsafe_allow_html=True)
+elif app_section.startswith("📈 Custom Number Plotter"):
+    st.markdown('<div class="main-title">📈 Custom Number Plotter & AI Insights Engine</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Enter your own numbers for X and Y, choose your chart type, and get instant mathematical and scientific insights!</div>', unsafe_allow_html=True)
 
-    if hist_df is not None:
-        plot_c1, plot_c2, plot_c3 = st.columns(3)
+    plot_inp_col, plot_out_col = st.columns([1, 1], gap="large")
 
-        var_labels = {
-            'cement': 'Portland Cement (kg/m³)',
-            'slag': 'Blast Furnace Slag (kg/m³)',
-            'ash': 'Fly Ash (kg/m³)',
-            'water': 'Mixing Water (kg/m³)',
-            'superplastic': 'Superplasticizer (kg/m³)',
-            'coarseagg': 'Coarse Aggregate (kg/m³)',
-            'fineagg': 'Fine Aggregate (kg/m³)',
-            'age': 'Curing Age (Days)',
-            'wb_ratio': 'Water-to-Binder Ratio (w/b)',
-            'strength': 'Compressive Strength (MPa)'
-        }
+    with plot_inp_col:
+        st.subheader("1. Enter Your X and Y Numbers")
 
-        with plot_c1:
-            x_var = st.selectbox("Select X-Axis Variable:", list(var_labels.keys()), index=8, format_func=lambda k: var_labels[k])
-        with plot_c2:
-            y_var = st.selectbox("Select Y-Axis Variable:", list(var_labels.keys()), index=9, format_func=lambda k: var_labels[k])
-        with plot_c3:
-            chart_type = st.selectbox("Choose Graph Type:", ["Scatter Plot with Trendline", "2D Density Heatmap", "Box Plot", "Histogram / Distribution"])
+        data_preset = st.selectbox(
+            "Or load a sample science dataset:",
+            [
+                "Custom (Type your own numbers below)",
+                "Water-to-Binder Ratio vs Compressive Strength (Abrams' Law)",
+                "Curing Days vs Strength Growth (Hydration Kinetics)",
+                "Superplasticizer Dose vs Mixing Water Required",
+                "Temperature vs Reaction Rate Constant (Arrhenius Law)"
+            ]
+        )
 
-        # Render Chart
-        if chart_type == "Scatter Plot with Trendline":
-            fig_custom = px.scatter(
-                hist_df, x=x_var, y=y_var, color='age',
-                trendline="ols",
-                title=f"{var_labels[y_var]} vs. {var_labels[x_var]}",
-                labels={k: var_labels.get(k, k) for k in [x_var, y_var, 'age']},
-                opacity=0.65
-            )
-        elif chart_type == "2D Density Heatmap":
-            fig_custom = px.density_heatmap(
-                hist_df, x=x_var, y=y_var,
-                title=f"Density Heatmap: {var_labels[y_var]} vs. {var_labels[x_var]}",
-                labels={k: var_labels.get(k, k) for k in [x_var, y_var]}
-            )
-        elif chart_type == "Box Plot":
-            fig_custom = px.box(
-                hist_df, x=x_var if x_var == 'age' else 'age', y=y_var,
-                title=f"Distribution of {var_labels[y_var]} across Curing Ages",
-                labels={k: var_labels.get(k, k) for k in [x_var, y_var, 'age']}
-            )
+        if data_preset == "Water-to-Binder Ratio vs Compressive Strength (Abrams' Law)":
+            default_x = "0.28, 0.35, 0.42, 0.50, 0.60, 0.70, 0.85, 1.05"
+            default_y = "68.5, 54.2, 45.0, 36.1, 27.4, 20.8, 14.5, 9.2"
+            default_x_label = "Water-to-Binder Ratio (w/b)"
+            default_y_label = "Compressive Strength (MPa)"
+        elif data_preset == "Curing Days vs Strength Growth (Hydration Kinetics)":
+            default_x = "1, 3, 7, 14, 28, 56, 90, 180, 365"
+            default_y = "11.2, 22.4, 34.0, 42.5, 48.0, 52.3, 55.1, 57.0, 58.4"
+            default_x_label = "Curing Age (Days)"
+            default_y_label = "Strength (MPa)"
+        elif data_preset == "Superplasticizer Dose vs Mixing Water Required":
+            default_x = "0, 2, 5, 8, 12, 16, 20"
+            default_y = "210, 195, 178, 160, 148, 140, 136"
+            default_x_label = "Superplasticizer (kg/m³)"
+            default_y_label = "Required Mixing Water (kg/m³)"
+        elif data_preset == "Temperature vs Reaction Rate Constant (Arrhenius Law)":
+            default_x = "5, 15, 25, 35, 50, 65, 80"
+            default_y = "0.22, 0.55, 1.00, 1.75, 3.40, 6.10, 10.20"
+            default_x_label = "Temperature (°C)"
+            default_y_label = "Reaction Rate Factor"
         else:
-            fig_custom = px.histogram(
-                hist_df, x=x_var, nbins=30,
-                title=f"Histogram of {var_labels[x_var]}",
-                color_discrete_sequence=['#0284c7']
-            )
+            default_x = "10, 20, 30, 40, 50, 60, 70, 80"
+            default_y = "14.2, 26.5, 37.0, 46.8, 55.0, 61.2, 65.4, 68.0"
+            default_x_label = "Independent Variable (X)"
+            default_y_label = "Dependent Variable (Y)"
 
-        fig_custom.update_layout(height=480)
-        st.plotly_chart(fig_custom, use_container_width=True)
+        x_text = st.text_area("Enter X Numbers (separated by commas or spaces):", value=default_x, height=75)
+        y_text = st.text_area("Enter Y Numbers (separated by commas or spaces):", value=default_y, height=75)
 
-        # Automated AI Scientific Insights Engine
-        corr_val = hist_df[x_var].corr(hist_df[y_var]) if x_var != y_var else 1.0
+        x_name = st.text_input("Label for X-Axis:", value=default_x_label)
+        y_name = st.text_input("Label for Y-Axis:", value=default_y_label)
 
-        st.markdown(f"### 🧠 Automated Scientific Insights for `{var_labels[x_var]}` &bull; `{var_labels[y_var]}`")
+        chart_choice = st.selectbox(
+            "Choose Graph Type:",
+            [
+                "🔵 Scatter Plot with Best-Fit Line (Linear Trendline)",
+                "📈 Connected Line Chart (Continuous Path)",
+                "📊 Column / Bar Chart (Discrete Comparison)",
+                "📉 Curved Polynomial Fit (Non-Linear Regression)"
+            ]
+        )
 
-        insight_text = ""
-        if x_var == 'wb_ratio' and y_var == 'strength':
-            insight_text = "**Abrams' Law Confirmed:** Notice the distinct inverse decay curve. As water-to-binder increases beyond 0.50, compressive strength drops precipitously. The excess water leaves capillary voids upon evaporation."
-        elif x_var == 'cement' and y_var == 'strength':
-            insight_text = "**Primary Hydraulic Driver:** Strong positive correlation (+0.50). Cement is the primary source of calcium silicates. However, beyond ~450 kg/m³, gains plateau unless the water-to-binder ratio is reduced."
-        elif x_var == 'water' and y_var == 'strength':
-            insight_text = "**The Water Paradox:** While water is required for hydration, excess water acts as a diluent. Water has a negative correlation with strength (-0.29). Always minimize water and use superplasticizer to maintain workability."
-        elif x_var == 'age' and y_var == 'strength':
-            insight_text = "**Logarithmic Hydration Kinetics:** Strength increases rapidly from Day 1 to 28, then flattens. Slag and fly ash continue hydrating for up to 365 days due to secondary pozzolanic reactions."
-        elif x_var == 'superplastic' and y_var == 'water':
-            insight_text = "**Chemical Dispersion:** Strong negative correlation (-0.66). Superplasticizer deflocculates cement grains, allowing engineers to remove ~30% of mixing water while maintaining a fluid pour."
-        else:
-            if corr_val > 0.3:
-                insight_text = f"**Positive Association (r = {corr_val:+.2f}):** Increasing `{var_labels[x_var]}` generally increases `{var_labels[y_var]}` in this dataset."
-            elif corr_val < -0.3:
-                insight_text = f"**Inverse Association (r = {corr_val:+.2f}):** Increasing `{var_labels[x_var]}` generally decreases `{var_labels[y_var]}`."
+    with plot_out_col:
+        st.subheader("2. Plotted Graph & AI Insights")
+
+        # Parse numerical inputs
+        try:
+            x_vals = [float(val.strip()) for val in x_text.replace(',', ' ').split() if val.strip()]
+            y_vals = [float(val.strip()) for val in y_text.replace(',', ' ').split() if val.strip()]
+
+            if len(x_vals) != len(y_vals):
+                st.error(f"⚠️ Mismatch in numbers: You entered **{len(x_vals)}** X values but **{len(y_vals)}** Y values. Both must have the same count!")
+            elif len(x_vals) < 2:
+                st.warning("Please enter at least 2 coordinate pairs to plot a graph.")
             else:
-                insight_text = f"**Non-Linear / Weak Direct Correlation (r = {corr_val:+.2f}):** These two variables do not have a simple linear link. Their interaction depends on multi-variable combinations with other constituents."
+                user_df = pd.DataFrame({'X': x_vals, 'Y': y_vals}).sort_values('X')
 
-        st.markdown(f"""
-        <div class="insight-card">
-            <strong>Pearson Correlation (r):</strong> <code>{corr_val:+.3f}</code><br><br>
-            {insight_text}
-        </div>
-        """, unsafe_allow_html=True)
+                # Calculate Mathematical Metrics
+                n = len(user_df)
+                x_arr = user_df['X'].values
+                y_arr = user_df['Y'].values
+
+                corr = np.corrcoef(x_arr, y_arr)[0, 1] if np.std(x_arr) > 0 and np.std(y_arr) > 0 else 0.0
+                r_squared = corr ** 2
+
+                slope, intercept = np.polyfit(x_arr, y_arr, 1)
+
+                # Render Plotly Chart
+                if "Scatter Plot" in chart_choice:
+                    fig_usr = px.scatter(
+                        user_df, x='X', y='Y', trendline="ols",
+                        title=f"{y_name} vs. {x_name}",
+                        labels={'X': x_name, 'Y': y_name}
+                    )
+                    fig_usr.update_traces(marker=dict(size=12, color='#0284c7', line=dict(color='black', width=1)))
+                elif "Line Chart" in chart_choice:
+                    fig_usr = px.line(
+                        user_df, x='X', y='Y', markers=True,
+                        title=f"{y_name} vs. {x_name}",
+                        labels={'X': x_name, 'Y': y_name}
+                    )
+                    fig_usr.update_traces(line=dict(color='#0284c7', width=3), marker=dict(size=10, color='#0369a1'))
+                elif "Bar Chart" in chart_choice:
+                    fig_usr = px.bar(
+                        user_df, x='X', y='Y',
+                        title=f"{y_name} vs. {x_name}",
+                        labels={'X': x_name, 'Y': y_name},
+                        color_discrete_sequence=['#0284c7']
+                    )
+                else:
+                    # Polynomial quadratic fit
+                    poly_coeffs = np.polyfit(x_arr, y_arr, 2)
+                    x_smooth = np.linspace(min(x_arr), max(x_arr), 100)
+                    y_smooth = np.polyval(poly_coeffs, x_smooth)
+
+                    fig_usr = go.Figure()
+                    fig_usr.add_trace(go.Scatter(x=x_arr, y=y_arr, mode='markers', name='Data Points', marker=dict(size=12, color='#ef4444')))
+                    fig_usr.add_trace(go.Scatter(x=x_smooth, y=y_smooth, mode='lines', name='Curved Fit (Degree 2)', line=dict(color='#0284c7', width=3)))
+                    fig_usr.update_layout(title=f"Curved Fit: {y_name} vs. {x_name}", xaxis_title=x_name, yaxis_title=y_name)
+
+                fig_usr.update_layout(height=420, margin=dict(l=40, r=20, t=40, b=40))
+                st.plotly_chart(fig_usr, use_container_width=True)
+
+                # AI Insights Engine
+                st.markdown("### 🧠 AI Mathematical & Scientific Insights")
+
+                sign_str = "+" if intercept >= 0 else "-"
+                eq_str = f"Y = {slope:.3f} · X {sign_str} {abs(intercept):.3f}"
+
+                # Classify relationship behavior
+                if abs(corr) >= 0.90:
+                    strength_desc = "Extremely Strong Relationship"
+                elif abs(corr) >= 0.70:
+                    strength_desc = "Strong Relationship"
+                elif abs(corr) >= 0.40:
+                    strength_desc = "Moderate Correlation"
+                else:
+                    strength_desc = "Weak or Complex Non-Linear Association"
+
+                direction_desc = "Direct / Positive (As X rises, Y rises)" if slope > 0 else "Inverse / Negative (As X rises, Y drops)"
+
+                # Check for diminishing returns or plateau
+                if len(y_arr) >= 3:
+                    diffs = np.diff(y_arr)
+                    if np.all(diffs >= 0) and diffs[-1] < diffs[0] * 0.5:
+                        curvature_note = "💡 **Diminishing Returns Detected:** Growth slows down at higher X values, forming a classic plateau curve (common in chemical saturation and curing limits)."
+                    elif np.all(diffs <= 0) and abs(diffs[-1]) < abs(diffs[0]) * 0.5:
+                        curvature_note = "💡 **Decay Plateau Detected:** The rate of drop flattens out as X increases (classic asymptotic decay, similar to Abrams' Law)."
+                    else:
+                        curvature_note = "💡 **Rate of Change:** The slope indicates that for every 1-unit increase in X, Y changes by approximately **{:.3f} units**.".format(slope)
+                else:
+                    curvature_note = ""
+
+                st.markdown(f"""
+                <div class="insight-card">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                        {strength_desc} &bull; {direction_desc}
+                    </div>
+                    <strong>Best-Fit Linear Equation:</strong> <code>{eq_str}</code><br>
+                    <strong>Pearson Correlation (r):</strong> <code>{corr:+.4f}</code> &bull; 
+                    <strong>Goodness of Fit (R²):</strong> <code>{r_squared*100:.1f}%</code><br><br>
+                    {curvature_note}
+                </div>
+                """, unsafe_allow_html=True)
+
+        except Exception as err:
+            st.error(f"Error parsing numbers: {err}. Please ensure all entries are valid decimal numbers separated by commas.")
 
 # -----------------------------------------------------------------------------
 # Global Footer
 # -----------------------------------------------------------------------------
 st.markdown("---")
-st.caption("⚠️ **Mandatory Scientific Notice:** Predictions are machine-learned statistical estimates (Yeh 1998 Benchmark, 92% R²). They provide educational and decision-support guidance but do not replace destructive ASTM C39 / BS EN 12390 testing for life-critical building permits.")
+st.caption("⚠️ **Mandatory Scientific Notice:** Predictions and simulations are statistical estimates based on empirical concrete data (Yeh 1998 Benchmark, 92.0% R²). They provide educational and engineering decision-support guidance but do not replace destructive ASTM C39 / BS EN 12390 testing for life-critical building permits.")
