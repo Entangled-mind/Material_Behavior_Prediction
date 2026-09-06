@@ -1,6 +1,14 @@
 # Material Behavior Prediction Using Machine Learning
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://material-behavior-prediction.streamlit.app/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 An end-to-end, portfolio-quality machine learning project demonstrating how data-driven models can estimate the mechanical behavior of materials from their chemical formulation and environmental/curing conditions.
+
+🌐 **Live Cloud Application:** [https://material-behavior-prediction.streamlit.app/](https://material-behavior-prediction.streamlit.app/)  
+📄 **Executive Engineering Report:** [`docs/Final_Portfolio_Report.pdf`](docs/Final_Portfolio_Report.pdf)  
+📚 **Milestone Guides (1–10):** [`docs/milestones/`](docs/milestones/)
 
 ---
 
@@ -213,13 +221,14 @@ print(f"Predicted Compressive Strength: {predicted_strength:.2f} MPa")
 
 ---
 
-## 10. Future Work & Roadmap
+## 10. Interactive Application & Deployment (Milestone 10)
 
-While Version 1 establishes a rock-solid Python ML foundation, future iterations can expand into:
-- **Interactive Web Interface:** Deploying a real-time **Streamlit** dashboard for materials engineers to adjust sliders for cement, water, and age and see instant strength predictions.
-- **Relational Storage:** Creating an **SQL database** (PostgreSQL / SQLite) to store thousands of commercial batch trial tickets and mix designs.
-- **BI Visualizations:** Exporting predictions into **Power BI** or **Tableau** to visualize company-wide concrete quality control metrics.
-- **Broader Environmental Variables:** Integrating curing temperature, relative humidity, and carbonation exposure datasets.
+The project includes an interactive, cloud-deployed web application available live at **[material-behavior-prediction.streamlit.app](https://material-behavior-prediction.streamlit.app/)**:
+- **Dual Experience Mode:**
+  - **🌱 Simple Mode:** Everyday language, use-case project templates (patios, foundations, garages), drying timelines, and real-world weight analogies.
+  - **🔬 Advanced Mode:** Precise constituent sliders ($kg/m^3$), 365-day logarithmic hydration kinetics curve, Abrams' Law scatter explorer, parameter sensitivity sweeps, and embodied carbon footprint calculator.
+- **Batch CSV Inference Engine:** Upload laboratory mix files for instant multi-sample predictions and CSV export.
+- **Relational Persistence:** SQLite database (`material_predictions.db`) logging batch trials and tickets.
 
 ---
 
